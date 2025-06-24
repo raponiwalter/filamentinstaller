@@ -29,7 +29,8 @@ Before you begin, ensure you have the following installed on your system:
 
 ## Installation and Setup
 
-To use this starter kit, you will generate your own repository from this template.
+To use this starter kit, you will generate your own repository from this template or Download it as a Zip.
+If you download it as a Zip go to step 3.
 
 ### 1. Create Your Repository from this Template
 
