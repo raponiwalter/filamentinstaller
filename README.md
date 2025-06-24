@@ -29,73 +29,59 @@ Before you begin, ensure you have the following installed on your system:
 
 ## Installation and Setup
 
-Follow these steps to get the project up and running.
+To use this starter kit, you will generate your own repository from this template.
 
-### 1. Clone the Repository
+### 1. Create Your Repository from this Template
 
-Replace `project-name` with your desired name for the new application.
+Click the green **"Use this template"** button located at the top of the repository page on GitHub and choose **"Create a new repository"**. Follow the instructions to create a new repository under your own account.
+
+### 2. Clone Your New Repository
+
+Once your new repository is created, clone it to your local machine. Replace `<your-github-username>/<your-new-repo-name>.git` with the URL of the repository you just created.
 
 ```bash
-git clone https://github.com/raponiwalter/filamentinstaller.git project-name
+git clone https://github.com/<your-github-username>/<your-new-repo-name>.git project-name
 ```
 
-```bash
-#enter the project directory
-cd project-name
-````
+### 3. Enter the Project Directory
 
-### 3. Configure the Environment and Ports
+```bash
+cd project-name
+```
+
+### 4. Configure the Environment and Ports
 
 This project uses two separate environment files:
-* `.env`: For Laravel application settings (database credentials used by the app, app key, etc.).
-* `docker.env`: For Docker infrastructure settings, primarily the external ports for the services.
+* `.env`: For Laravel application settings (database credentials, app key, etc.).
+* `docker.env`: For Docker infrastructure settings (external ports).
 
-First, create the Laravel environment file:
+First, create the Laravel environment file from the example:
 ```bash
 cp .env.example .env
-````
+```
 
-**Method 1: Permanent Configuration (Recommended)**
+Next, create your local `docker.env` file. You can then edit it to change the default ports if needed.
 
-This method is ideal for setting the ports you'll use consistently for this project.
-
-A) Create your local `docker.env` file from the example:
 ```bash
 cp docker.env.example docker.env
 ```
 
-B) Open the docker.env file and change the value of WEB_PORT (and any others) to your desired port. For example, to run the webserver on port 8000:
+### 5. Start the Docker Containers
+
+This command will build the image and start all services. On the first run, it will automatically install all dependencies, set up the application, and create a default admin user based on the `entrypoint.sh` script.
 
 ```bash
-# docker.env file
-WEB_PORT=8000
-DB_PORT=3380
-# ... other ports
-````
-
-**Method 2: Temporary Override (On-the-fly)**
-
-This is useful for quick tests or when you need to run the project on a different port for a single session without changing your configuration files.
-
-Specify the port variable directly in the command line before `docker compose up`. This will override any value in `docker.env` for that specific command.
-
-```bash
-# This command starts the webserver on port 9999 for this session only
-WEB_PORT=9999 docker compose up -d
+docker-compose up -d --build
 ```
+*The first startup might take a few minutes. Subsequent startups will be instantaneous.*
 
-### 4. Start the Docker Containers
+### 6. Log In
 
-This command will build the image and start all services. On the first run, it will automatically install all Composer and NPM dependencies, generate the app key, run migrations, and create a default admin user.
-The default username is admin with password admin
-
-```bash
-docker compose up -d --build
-````
+The setup process automatically creates a default admin user. You can now access the admin panel and log in with the credentials `admin@localhost` and password `admin`.
 
 ## Accessing Services
 
-* **Web Application**: `http://localhost:8087` (or the port you set in `docker.env` or through docker compose)
+* **Web Application**: `http://localhost:8087` (or the port you set in `docker.env`)
 * **Admin Panel**: `http://localhost:8087/admin`
 * **phpMyAdmin**: `http://localhost:8090`
 * **MailHog**: `http://localhost:8025`
@@ -106,34 +92,43 @@ docker compose up -d --build
 
 ```bash
 # Start containers in the background
-docker compose up -d
+docker-compose up -d
 
 # Stop containers
-docker compose down
+docker-compose down
 ```
 
 #### Artisan Commands
 
-To run any `artisan` command, prefix it with `docker compose exec webserver`:
+To run any `artisan` command, prefix it with `docker-compose exec webserver`. An alias `pa` for `php artisan` is also available inside the container's shell.
 
 ```bash
-docker compose exec webserver php artisan list
-docker compose exec webserver php artisan make:model Product
+docker-compose exec webserver php artisan list
+# Or, after running `docker-compose exec webserver bash`:
+# pa list
 ```
 
 #### Running Tests
 
 ```bash
-docker compose exec webserver php artisan test
+docker-compose exec webserver php artisan test
 ```
 
 #### Code Quality
 
 ```bash
 # Format code with Laravel Pint
-docker compose exec webserver ./vendor/bin/pint
+docker-compose exec webserver ./vendor/bin/pint
 
 # Analyze code with PHPMD
-docker compose exec webserver ./vendor/bin/phpmd app text phpmd.xml
+docker-compose exec webserver ./vendor/bin/phpmd app text phpmd.xml
 ```
 
+#### Customizing Docker Ports
+
+To temporarily run the project on different ports, you can specify environment variables on the command line. This overrides any values in `docker.env` for that session only.
+
+```bash
+# This command starts the webserver on port 9999 for this session
+WEB_PORT=9999 docker-compose up -d
+```
