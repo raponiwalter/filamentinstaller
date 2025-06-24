@@ -29,6 +29,7 @@ services:
       - docker.env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_TCP_PORT: ${DB_PORT:-3306}
       TZ: 'Europe/Rome'
     ports:
       - "${DB_PORT:-3380}:3306"
